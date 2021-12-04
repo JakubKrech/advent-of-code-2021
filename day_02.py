@@ -1,3 +1,6 @@
+from utils.timer import timer_decorator
+
+@timer_decorator
 def Part1(data):
     
     horizontal = 0
@@ -15,6 +18,7 @@ def Part1(data):
 
     return horizontal * depth 
 
+@timer_decorator
 def Part2(data):
          
     horizontal = 0

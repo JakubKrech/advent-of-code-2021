@@ -1,3 +1,6 @@
+from utils.timer import timer_decorator
+
+@timer_decorator
 def Part1(data):
     
     bigger = 0
@@ -8,6 +11,7 @@ def Part1(data):
 
     return bigger
 
+@timer_decorator
 def Part2(data):
          
     bigger = 0

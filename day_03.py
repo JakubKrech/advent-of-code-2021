@@ -1,5 +1,7 @@
+from utils.timer import timer_decorator
 import copy
 
+@timer_decorator
 def Part1(data):
     gamma = 0
     epsilon = 0
@@ -64,6 +66,7 @@ def CalculateDiagnosticRating(full_data, rating_identifier):
 
     return BinaryToDecimal(data[0])
 
+@timer_decorator
 def Part2(data):
     oxygen = CalculateDiagnosticRating(data, "oxygen")
     co2 = CalculateDiagnosticRating(data, "CO2")
