@@ -30,37 +30,33 @@ def BinaryToDecimal(binaryForm):
 
     return decimalValue
 
-def CalculateExpectedBitValues(data, parameter):
-    ammount_of_true_bits = [0] * len(data[0])
-    expected_bit_value = [-1] * len(data[0])
-    total_ammount_of_bits = len(data)
+def CalculateExpectedBitValue(data, bit_index, parameter):
+    ammount_of_true_bits = 0
+    expected_bit_value = -1
 
     for line in data:
-        for bit_index, bit in enumerate(line):
-            if bit == '1':
-                ammount_of_true_bits[bit_index] += 1
+        if line[bit_index] == '1':
+            ammount_of_true_bits += 1
 
-    for bit_index, true_bits in enumerate(ammount_of_true_bits):
-        if parameter == "oxygen":
-            expected_bit_value[bit_index] = '1' if true_bits >= total_ammount_of_bits / 2 else '0'
-        elif parameter == "CO2":
-            expected_bit_value[bit_index] = '1' if true_bits < total_ammount_of_bits / 2 else '0'
+    if parameter == "oxygen":
+        expected_bit_value = '1' if ammount_of_true_bits >= len(data) / 2 else '0'
+    elif parameter == "CO2":
+        expected_bit_value = '1' if ammount_of_true_bits < len(data) / 2 else '0'
 
     return expected_bit_value
 
 def CalculateDiagnosticRating(full_data, rating_identifier):
-    value_one_bits = [0] * len(full_data[0])
     data = copy.deepcopy(full_data)
     newData = []
     
-    for bit_index, _ in enumerate(value_one_bits):
-        expected_bit_values = CalculateExpectedBitValues(data, rating_identifier)
+    for bit_index in range(len(full_data[0])):
+        expected_bit_value = CalculateExpectedBitValue(data, bit_index, rating_identifier)
 
-        for line_index, line in enumerate(data):    
-            if expected_bit_values[bit_index] == line[bit_index]:
-                newData.insert(0, data[line_index])
+        for line in data:    
+            if expected_bit_value == line[bit_index]:
+                newData.append(line)
         
-        data = copy.deepcopy(newData)
+        data[:] = newData
         newData.clear()
 
         if len(data) == 1:
@@ -70,9 +66,9 @@ def CalculateDiagnosticRating(full_data, rating_identifier):
 
 def Part2(data):
     oxygen = CalculateDiagnosticRating(data, "oxygen")
-    CO2 = CalculateDiagnosticRating(data, "CO2")
+    co2 = CalculateDiagnosticRating(data, "CO2")
     
-    return  oxygen * CO2
+    return  oxygen * co2
 
 if __name__ == "__main__":
 

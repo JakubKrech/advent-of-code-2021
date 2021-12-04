@@ -1,4 +1,4 @@
-def part1(data):
+def Part1(data):
     
     horizontal = 0
     depth = 0
@@ -15,7 +15,7 @@ def part1(data):
 
     return horizontal * depth 
 
-def part2(data):
+def Part2(data):
          
     horizontal = 0
     depth = 0
@@ -39,5 +39,5 @@ if __name__ == "__main__":
     with open("input/day_02.txt") as file:
         data = list(file)
 
-        print("Part 1: ", part1(data))
-        print("Part 2: ", part2(data))
+        print("Part 1: ", Part1(data))
+        print("Part 2: ", Part2(data))
