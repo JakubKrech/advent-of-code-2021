@@ -1,5 +1,4 @@
 from itertools import product
-import copy
 from utils.timer import timer_decorator
 
 class BingoBoard:
@@ -93,18 +92,9 @@ def PrepareBingoBoards(data):
     return boards
 
 @timer_decorator
-def Part1(bingoNumbers, bingoBoards):
-    
-    for number in bingoNumbers:
-        for board in bingoBoards:
-            if board.MarkNumberAndCheckForVictory(number):
-                return board.wonAtNumber * board.SumUncheckedNumbers()                 
-    
-    return -1
-
-@timer_decorator
-def Part2(bingoNumbers, bingoBoards):
+def PlaySomeBingo(bingoNumbers, bingoBoards):
          
+    firstWonBoardResult = -1
     boardsWon = 0
 
     for number in bingoNumbers:
@@ -112,10 +102,14 @@ def Part2(bingoNumbers, bingoBoards):
             if board.MarkNumberAndCheckForVictory(number):
                 boardsWon += 1
 
-                if boardsWon == len(bingoBoards):
-                    return board.wonAtNumber * board.SumUncheckedNumbers()          
+                if firstWonBoardResult == -1:
+                    firstWonBoardResult = board.wonAtNumber * board.SumUncheckedNumbers()
 
-    return -1
+                if boardsWon == len(bingoBoards):
+                    lastWonBoardResult = board.wonAtNumber * board.SumUncheckedNumbers()
+                    return firstWonBoardResult, lastWonBoardResult
+
+    return -1, -1
 
 if __name__ == "__main__":
 
@@ -126,5 +120,7 @@ if __name__ == "__main__":
         bingoNumbers = list(map(int, data[0].split(',')))
         bingoBoards = PrepareBingoBoards(list(filter(None, data[1:])))
 
-        print("Part 1: ", Part1(copy.deepcopy(bingoNumbers), copy.deepcopy(bingoBoards)))
-        print("Part 2: ", Part2(copy.deepcopy(bingoNumbers), copy.deepcopy(bingoBoards)))
+        firstBingoBoard, lastBingoBoard = PlaySomeBingo(bingoNumbers, bingoBoards)
+
+        print("Part 1:", firstBingoBoard)
+        print("Part 2:", lastBingoBoard)
