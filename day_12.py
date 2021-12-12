@@ -22,8 +22,9 @@ def TravelNodes_Part2(connections, total_paths, curr_node, path, double_visit_do
         elif to_node not in path or to_node.isupper() or double_visit_done == False:
             double_visit_done_Copy = double_visit_done
 
-            if to_node.islower() and to_node in path:
-                double_visit_done_Copy = True
+            if double_visit_done == False:
+                if to_node.islower() and to_node in path:
+                    double_visit_done_Copy = True
 
             pathCopy = path[:]
             pathCopy.append(to_node)
