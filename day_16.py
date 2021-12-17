@@ -79,14 +79,14 @@ def DecodePattern(binary_encoded_transmition, current_bit):
     
 
 @timer_decorator
-def Part1(hexadecimal_encoded_transmition):
+def EvaluateTheBITSExpression(hexadecimal_encoded_transmition):
     binary_encoded_transmition = bin(int(hexadecimal_encoded_transmition, 16))[2:].zfill(len(hexadecimal_encoded_transmition) * 4)
     return DecodePattern(binary_encoded_transmition, 0)
 
 if __name__ == "__main__":
     with open("input/day_16.txt") as file:
 
-        _, expression_result = Part1(list(file)[0])
+        _, expression_result = EvaluateTheBITSExpression(list(file)[0])
         
         print("Part 1:", packet_version_sum)
         print("Part 2:", expression_result)
