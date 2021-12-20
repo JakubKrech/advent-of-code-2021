@@ -1,6 +1,6 @@
 from utils.timer import timer_decorator
 
-def detect_rotation(scanner1, scanner2):
+def DetectRotation(scanner1, scanner2):
 
     sign_x, sign_y, sign_z = None, None, None
     ret_x, ret_y, ret_z = None, None, None
@@ -74,7 +74,7 @@ def CalculateBeacons(scanners):
                 for searched_beacon_id in range(ammount_of_scans_per_scanner):
                     relative_for_searched_scanner = GetRelativeToBeacon(scanners[searched_scanner_id], searched_beacon_id)
 
-                    found, sign_x, ret_x, sign_y, ret_y, sign_z, ret_z = detect_rotation(relative_for_current_scanner, relative_for_searched_scanner)
+                    found, sign_x, ret_x, sign_y, ret_y, sign_z, ret_z = DetectRotation(relative_for_current_scanner, relative_for_searched_scanner)
 
                     if found == True:
 
