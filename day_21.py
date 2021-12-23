@@ -79,5 +79,3 @@ if __name__ == "__main__":
 
         print("Part 1:", Part1(p1_pos, p2_pos))
         print("Part 2:", Part2(p1_pos, p2_pos))
-
-    
