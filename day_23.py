@@ -12,36 +12,33 @@ def print_amphipods(d):
     print(f"    | {d[7][3]} | {d[8][3]} | {d[9][3]} | {d[10][3]} |  ")
     print("    -----------------  ")
 
-moveCost = { 'A': 1, 'a': 1, 'B': 10, 'b': 10, 'C': 100, 'c': 100, 'D': 1000, 'd': 1000 }
+moveCost = {'A': 1, 'a': 1, 'B': 10, 'b': 10, 'C': 100, 'c': 100, 'D': 1000, 'd': 1000}
 energies_required = set()
 
+def MoveToCorridorPosition(d, el, position, move_to_corridor_cost, cost, curr_index, interrupted, current_column_index):
 
-def MoveToCorridorPosition(d, el, position, cost, curr_index, interrupted, current_column_index):
-    
     new_interrupted = deepcopy(interrupted)
     if new_interrupted:
         return new_interrupted
 
-    new_d = list()
-    for x in d:
-        a = deepcopy(x)
-        new_d.append(a)
+    new_d = deepcopy(d)
 
     if not new_interrupted and new_d[position] == '.':
-        
+
         new_d[position] = el.lower()
         new_d[current_column_index][curr_index] = '.'
         new_cost = deepcopy(cost) 
-        new_cost += moveCost[el] * (2 + curr_index)
+        new_cost += moveCost[el] * (move_to_corridor_cost + curr_index)
+
         ReccurentAmphipod(new_d, new_cost)
     else:
         new_interrupted = True
-    
+
     return new_interrupted
+
 
 def MoveToColumns(d, el, cost, curr_index, target_column_index, current_column_index):
     can_move_to_column = True
-    # print(">", d)
     if can_move_to_column:
         if '.' not in d[target_column_index]:
             can_move_to_column = False
@@ -51,7 +48,7 @@ def MoveToColumns(d, el, cost, curr_index, target_column_index, current_column_i
                 if col_elem != '.' and el not in [col_elem.lower(), col_elem.upper()]:
                     can_move_to_column = False
                     break
-    
+
     if can_move_to_column:
         for col_elem_index in [3, 2, 1, 0]:
 
@@ -63,17 +60,8 @@ def MoveToColumns(d, el, cost, curr_index, target_column_index, current_column_i
 
             # move to last column element
             if can_assign:
-                # new_d = deepcopy(d)
 
-                new_d = list()
-                for x in d:
-                    a = deepcopy(x)
-                    new_d.append(a)
-
-                # new_d = []
-                # for x in d:
-                #     new_d.append(x)
-
+                new_d = deepcopy(d)
                 new_d[target_column_index][col_elem_index] = el.lower()
                 new_d[current_column_index][curr_index] = '.'
                 # move up from column (curr_index to account for climbing from lower elements) +
@@ -81,9 +69,7 @@ def MoveToColumns(d, el, cost, curr_index, target_column_index, current_column_i
                 new_cost = deepcopy(cost)
                 new_cost += moveCost[el] * (1 + curr_index + abs(current_column_index - target_column_index) * 2 + 1 + col_elem_index) 
                 ReccurentAmphipod(new_d, new_cost)
-                # input()
 
-    # print("<", d)
 
 def MoveCorridorElementToColumn(d, el, cost, target_column_index, corridor_index, cost_to_reach_column):
     can_move_to_column = True
@@ -109,13 +95,7 @@ def MoveCorridorElementToColumn(d, el, cost, target_column_index, corridor_index
 
             # move to last column element
             if can_assign:
-                # new_d = deepcopy(d)
-
-                new_d = list()
-                for x in d:
-                    a = deepcopy(x)
-                    new_d.append(a)
-
+                new_d = deepcopy(d)
                 new_d[target_column_index][col_elem_index] = el.lower()
                 new_d[corridor_index] = '.'
                 new_cost = deepcopy(cost)
@@ -124,33 +104,26 @@ def MoveCorridorElementToColumn(d, el, cost, target_column_index, corridor_index
 
 
 def ReccurentAmphipod(d, cost):
-    # data = deepcopy(d)
 
-    # print_amphipods(d)
-    # print(d)
-    # print("Current cost:", cost)
-    # input()
+    if energies_required:
+        if cost > min(energies_required):
+            return
 
     # Check if victory condition fullfilled
-    if d[7][0] in ['A', 'a'] and d[7][1] in ['A', 'a'] and d[7][2] in ['A', 'a'] and d[7][3] in ['A', 'a'] and \
-       d[8][0] in ['B', 'b'] and d[8][1] in ['B', 'b'] and d[8][2] in ['B', 'b'] and d[8][3] in ['B', 'b'] and \
-       d[9][0] in ['C', 'c'] and d[9][1] in ['C', 'c'] and d[9][2] in ['C', 'c'] and d[9][3] in ['C', 'c'] and \
-       d[10][0] in ['D', 'd'] and d[10][1] in ['D', 'd'] and d[10][2] in ['D', 'd'] and d[10][3] in ['D', 'd']:
-       # and \
-       #d[0] == '.' and d[1] == '.' and d[2] == '.' and d[3] == '.' and d[4] == '.' and d[5] == '.' and d[6] == '.':
+    if  d[7][0] in ['A', 'a'] and d[7][1] in ['A', 'a'] and d[7][2] in ['A', 'a'] and d[7][3] in ['A', 'a'] and \
+        d[8][0] in ['B', 'b'] and d[8][1] in ['B', 'b'] and d[8][2] in ['B', 'b'] and d[8][3] in ['B', 'b'] and \
+        d[9][0] in ['C', 'c'] and d[9][1] in ['C', 'c'] and d[9][2] in ['C', 'c'] and d[9][3] in ['C', 'c'] and \
+        d[10][0] in ['D', 'd'] and d[10][1] in ['D', 'd'] and d[10][2] in ['D', 'd'] and d[10][3] in ['D', 'd']:
         
-        print_amphipods(d)
-        print("VICTORY, cost:", cost)
+        if not energies_required or cost < min(energies_required):
+            print("NEW MINIMUM COST FOUND:", cost)
+
         energies_required.add(cost)
-        # print(energies_required)
-        
-        input()
         return
 
     # Check every element and try to move it to every possible location
 
     # column A
-    # print("COL A")
     current_column_index = 7
     for curr_index, elem in enumerate(d[current_column_index]):
 
@@ -159,33 +132,24 @@ def ReccurentAmphipod(d, cost):
             break
 
         if elem in ['A', 'B', 'C', 'D']:
-            # print("MOVE TO CORRIDOR POSITION")
             # MOVE TO CORRIDOR POSITIONS ON THE LEFT
             interrupted = False
             # # move to left_corridor
-            # print("0", d)
-            interrupted = MoveToCorridorPosition(d, elem, 1, 2, curr_index, interrupted, current_column_index)   
-            # print("1", d)
+            interrupted = MoveToCorridorPosition(d, elem, 1, 2, cost, curr_index, interrupted, current_column_index)   
             # move to leftmost_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 0, 3, curr_index, interrupted, current_column_index)
-            # print("2", d)    
+            interrupted = MoveToCorridorPosition(d, elem, 0, 3, cost, curr_index, interrupted, current_column_index)
             # MOVE TO CORRIDOR POSITIONS ON THE RIGHT
             interrupted = False
             # move to mid_left
-            interrupted = MoveToCorridorPosition(d, elem, 2, 2, curr_index, interrupted, current_column_index)
-            # print("3", d)
+            interrupted = MoveToCorridorPosition(d, elem, 2, 2, cost, curr_index, interrupted, current_column_index)
             # move to mid_mid
-            interrupted = MoveToCorridorPosition(d, elem, 3, 4, curr_index, interrupted, current_column_index)
-            # print("4", d)
+            interrupted = MoveToCorridorPosition(d, elem, 3, 4, cost, curr_index, interrupted, current_column_index)
             # move to mid_right
-            interrupted = MoveToCorridorPosition(d, elem, 4, 6, curr_index, interrupted, current_column_index)
-            # print("5", d)
+            interrupted = MoveToCorridorPosition(d, elem, 4, 6, cost, curr_index, interrupted, current_column_index)
             # move to right_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 5, 8, curr_index, interrupted, current_column_index)
-            # print("6", d)
+            interrupted = MoveToCorridorPosition(d, elem, 5, 8, cost, curr_index, interrupted, current_column_index)
             # move to rightmost_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 6, 9, curr_index, interrupted, current_column_index)
-            # print("7", d)
+            interrupted = MoveToCorridorPosition(d, elem, 6, 9, cost, curr_index, interrupted, current_column_index)
 
             # MOVE TO ANOTHER COLUMNS
             if elem == 'A':
@@ -202,14 +166,9 @@ def ReccurentAmphipod(d, cost):
                 can_move_towards_column = (d[2] == '.' and d[3] == '.' and d[4] == '.')
 
             if can_move_towards_column:
-                # print("COLUMN A")
                 MoveToColumns(d, elem, cost, curr_index, target_column_index, current_column_index)
-    # print(" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< RETURNING")
-    # print(d)
-    # print(" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ")
-    # return
+
     # column B
-    # print("COL B")
     current_column_index = 8
     for curr_index, elem in enumerate(d[current_column_index]):
 
@@ -222,22 +181,22 @@ def ReccurentAmphipod(d, cost):
             # MOVE TO CORRIDOR POSITIONS ON THE LEFT
             interrupted = False
             # move to mid_left
-            interrupted = MoveToCorridorPosition(d, elem, 2, 2, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 2, 2, cost, curr_index, interrupted, current_column_index)
             # # move to left_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 1, 4, curr_index, interrupted, current_column_index)   
+            interrupted = MoveToCorridorPosition(d, elem, 1, 4, cost, curr_index, interrupted, current_column_index)   
             # move to leftmost_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 0, 5, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 0, 5, cost, curr_index, interrupted, current_column_index)
 
             # MOVE TO CORRIDOR POSITIONS ON THE RIGHT
             interrupted = False
             # move to mid_mid
-            interrupted = MoveToCorridorPosition(d, elem, 3, 2, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 3, 2, cost, curr_index, interrupted, current_column_index)
             # move to mid_right
-            interrupted = MoveToCorridorPosition(d, elem, 4, 4, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 4, 4, cost, curr_index, interrupted, current_column_index)
             # move to right_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 5, 6, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 5, 6, cost, curr_index, interrupted, current_column_index)
             # move to rightmost_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 6, 7, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 6, 7, cost, curr_index, interrupted, current_column_index)
 
             # MOVE TO ANOTHER COLUMNS
             if elem == 'A':
@@ -254,11 +213,9 @@ def ReccurentAmphipod(d, cost):
                 can_move_towards_column = (d[3] == '.' and d[4] == '.')
 
             if can_move_towards_column:
-                # print("COLUMN B")
                 MoveToColumns(d, elem, cost, curr_index, target_column_index, current_column_index)
 
     # column C
-    # print("COL C")
     current_column_index = 9
     for curr_index, elem in enumerate(d[current_column_index]):
 
@@ -271,22 +228,22 @@ def ReccurentAmphipod(d, cost):
             # MOVE TO CORRIDOR POSITIONS ON THE LEFT
             interrupted = False
             # move to mid_mid
-            interrupted = MoveToCorridorPosition(d, elem, 3, 2, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 3, 2, cost, curr_index, interrupted, current_column_index)
             # move to mid_left
-            interrupted = MoveToCorridorPosition(d, elem, 2, 4, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 2, 4, cost, curr_index, interrupted, current_column_index)
             # # move to left_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 1, 6, curr_index, interrupted, current_column_index)   
+            interrupted = MoveToCorridorPosition(d, elem, 1, 6, cost, curr_index, interrupted, current_column_index)   
             # move to leftmost_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 0, 7, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 0, 7, cost, curr_index, interrupted, current_column_index)
 
             # MOVE TO CORRIDOR POSITIONS ON THE RIGHT
             interrupted = False
             # move to mid_right
-            interrupted = MoveToCorridorPosition(d, elem, 4, 2, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 4, 2, cost, curr_index, interrupted, current_column_index)
             # move to right_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 5, 4, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 5, 4, cost, curr_index, interrupted, current_column_index)
             # move to rightmost_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 6, 5, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 6, 5, cost, curr_index, interrupted, current_column_index)
 
             # MOVE TO ANOTHER COLUMNS
             if elem == 'A':
@@ -303,11 +260,9 @@ def ReccurentAmphipod(d, cost):
                 can_move_towards_column = (d[4] == '.')
 
             if can_move_towards_column:
-                # print("COLUMN C")
                 MoveToColumns(d, elem, cost, curr_index, target_column_index, current_column_index)
 
     # column D
-    # print("COL D")
     current_column_index = 10
     for curr_index, elem in enumerate(d[current_column_index]):
 
@@ -320,23 +275,23 @@ def ReccurentAmphipod(d, cost):
             # MOVE TO CORRIDOR POSITIONS ON THE LEFT
             interrupted = False
             # move to mid_right
-            interrupted = MoveToCorridorPosition(d, elem, 4, 2, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 4, 2, cost, curr_index, interrupted, current_column_index)
             # move to mid_mid
-            interrupted = MoveToCorridorPosition(d, elem, 3, 4, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 3, 4, cost, curr_index, interrupted, current_column_index)
             # move to mid_left
-            interrupted = MoveToCorridorPosition(d, elem, 2, 6, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 2, 6, cost, curr_index, interrupted, current_column_index)
             # # move to left_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 1, 8, curr_index, interrupted, current_column_index)   
+            interrupted = MoveToCorridorPosition(d, elem, 1, 8, cost, curr_index, interrupted, current_column_index)   
             # move to leftmost_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 0, 9, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 0, 9, cost, curr_index, interrupted, current_column_index)
 
             # MOVE TO CORRIDOR POSITIONS ON THE RIGHT
             interrupted = False
             
             # move to right_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 5, 2, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 5, 2, cost, curr_index, interrupted, current_column_index)
             # move to rightmost_corridor
-            interrupted = MoveToCorridorPosition(d, elem, 6, 3, curr_index, interrupted, current_column_index)
+            interrupted = MoveToCorridorPosition(d, elem, 6, 3, cost, curr_index, interrupted, current_column_index)
 
             # MOVE TO ANOTHER COLUMNS
             if elem == 'A':
@@ -352,8 +307,7 @@ def ReccurentAmphipod(d, cost):
                 target_column_index = 10
                 can_move_towards_column = False # Same column
 
-            if can_move_towards_column:
-                # print("COLUMN D")    
+            if can_move_towards_column:   
                 MoveToColumns(d, elem, cost, curr_index, target_column_index, current_column_index)
 
     # HANDLE MOVEMENT FOR ELEMENTS THAT ARE CURRENTLY IN THE CORRIDOR            
@@ -382,7 +336,6 @@ def ReccurentAmphipod(d, cost):
             cost_to_reach_column = 8
 
         if can_move_towards_column:
-            # print("LEFTMOST")
             MoveCorridorElementToColumn(d, elem, cost, target_column_index, corridor_index, cost_to_reach_column)
     
     # left element
@@ -409,7 +362,6 @@ def ReccurentAmphipod(d, cost):
             cost_to_reach_column = 7
 
         if can_move_towards_column:
-            # print("LEFT")
             MoveCorridorElementToColumn(d, elem, cost, target_column_index, corridor_index, cost_to_reach_column)
 
     # mid-left element
@@ -436,7 +388,6 @@ def ReccurentAmphipod(d, cost):
             cost_to_reach_column = 5
 
         if can_move_towards_column:
-            # print("MID-LEFT")
             MoveCorridorElementToColumn(d, elem, cost, target_column_index, corridor_index, cost_to_reach_column)
 
     # mid-mid element
@@ -463,7 +414,6 @@ def ReccurentAmphipod(d, cost):
             cost_to_reach_column = 3
 
         if can_move_towards_column:
-            # print("MID-MID")
             MoveCorridorElementToColumn(d, elem, cost, target_column_index, corridor_index, cost_to_reach_column)
 
     # mid-right element
@@ -490,7 +440,6 @@ def ReccurentAmphipod(d, cost):
             cost_to_reach_column = 1
 
         if can_move_towards_column:
-            # print("MID-RIGHT")
             MoveCorridorElementToColumn(d, elem, cost, target_column_index, corridor_index, cost_to_reach_column)
 
     # right element
@@ -517,7 +466,6 @@ def ReccurentAmphipod(d, cost):
             cost_to_reach_column = 1
 
         if can_move_towards_column:
-            # print("RIGHT")
             MoveCorridorElementToColumn(d, elem, cost, target_column_index, corridor_index, cost_to_reach_column)
 
     # rightmost element
@@ -544,15 +492,12 @@ def ReccurentAmphipod(d, cost):
             cost_to_reach_column = 2
 
         if can_move_towards_column:
-            # print("RIGHTMOST")
             MoveCorridorElementToColumn(d, elem, cost, target_column_index, corridor_index, cost_to_reach_column)
 
-
-    # print("<< returning")
     return
 
 @timer_decorator
-def Part2(data):
+def CalculateLeastRequiredEnergy(data):
 
     leftmost_corridor = '.'  # data[0]
     left_corridor = '.'      # data[1]
@@ -569,34 +514,12 @@ def Part2(data):
     column_C = [data[0][2], data[1][2], data[2][2], data[3][2]]  # data[9]
     column_D = [data[0][3], data[1][3], data[2][3], data[3][3]]  # data[10]
 
-    # column_A = [data[0][0], data[1][0], data[2][0], 'd']  # data[7]
-    # column_B = ['.', '.', 'C', 'A']  # data[8]
-    # column_C = ['.', '.', data[2][1], data[3][1]]  # data[9]
-    # column_D = ['.', '.', 'D', 'D']  # data[10]
-
-    # column_A = ['C', 'C', 'C', 'C']  # data[7]
-    # column_B = ['.', 'A', 'D', 'D']  # data[8]
-    # column_C = ['.', '.', '.', '.']  # data[9]
-    # column_D = ['A', 'A', 'D', 'D']  # data[10]
-
-    print(column_A)
-    print(column_B)
-    print(column_C)
-    print(column_D)
-
     full_data = [leftmost_corridor, left_corridor, mid_left, mid_mid, mid_right, right_corridor, rightmost_corridor, \
         column_A, column_B, column_C, column_D]
 
-    # print(full_data)
-
-    # print_amphipods(full_data)
-
     ReccurentAmphipod(full_data, 0)
 
-    print(energies_required)
-
     retVal = 0
-
     if energies_required:
         retVal = min(energies_required)
 
@@ -604,16 +527,6 @@ def Part2(data):
 
 
 if __name__ == "__main__":
-
-    '''
-    #############
-    #...........#
-    ###D#C#A#B###
-      #D#C#B#A#
-      #D#B#A#C#
-      #B#C#D#A#
-      #########
-    '''
 
     with open("input/day_23.txt") as file:
         data = [line.rstrip() for line in list(file)]
@@ -625,4 +538,4 @@ if __name__ == "__main__":
             l = [match.group(1), match.group(2), match.group(3), match.group(4)]
             amphipods.append(l)
 
-        print("Part 2: ", Part2(amphipods))
+        print("Part 2: ", CalculateLeastRequiredEnergy(amphipods))
